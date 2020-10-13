@@ -19,19 +19,18 @@ struct movie *createmovie(char *currLine)
     struct movie *currMovie = malloc(sizeof(struct movie));
     // For use with strtok_r
     char *saveptr;
-
     // The first token is the title
-    char *token = strtok_r(currLine, " ", &saveptr);
+    char *token = strtok_r(currLine, ",", &saveptr);
     currMovie->title = calloc(strlen(token) + 1, sizeof(char));
     strcpy(currMovie->title, token);
 
     // The next token is the year
-    token = strtok_r(NULL, " ", &saveptr);
+    token = strtok_r(NULL, ",", &saveptr);
     currMovie->year = calloc(strlen(token) + 1, sizeof(char));
     strcpy(currMovie->year, token);
 
     // The next token is the lang
-    token = strtok_r(NULL, " ", &saveptr);
+    token = strtok_r(NULL, ",", &saveptr);
     currMovie->lang = calloc(strlen(token) + 1, sizeof(char));
     strcpy(currMovie->lang, token);
 
@@ -77,16 +76,7 @@ struct movie *processFile(char *filePath)
     {
       perror("fopen");
     }
-    char cwd[PATH_MAX];
-    if (getcwd(cwd, sizeof(cwd)) != NULL) {
-      printf("Current working dir: %s\n", cwd);
-      }
-    else {
-      perror("getcwd() error");
-      return 1;
-    }
-    printf("%s\n",filePath);
-    printf("%s\n",movieFile);
+  
     char *currLine = NULL;
     size_t len = 0;
     ssize_t nread;
@@ -96,32 +86,33 @@ struct movie *processFile(char *filePath)
     struct movie *head = NULL;
     // The tail of the linked list
     struct movie *tail = NULL;
-
+	printf("movie null");
     // Read the file line by line
-    // while ((nread = getline(&currLine, &len, movieFile)) != -1)
+     while ((nread = getline(&currLine, &len, movieFile)) != -1)
     {
+
         // Get a new movie node corresponding to the current line
-        // struct movie *newNode = createmovie(currLine);
+         struct movie *newNode = createmovie(currLine);
         //
-        // // Is this the first node in the linked list?
-        // if (head == NULL)
-        // {
+       
+         if (head == NULL)
+         {
         //     // This is the first node in the linked link
         //     // Set the head and the tail to this node
-        //     head = newNode;
-        //     tail = newNode;
-        // }
-        // else
-        // {
+             head = newNode;
+             tail = newNode;
+         }
+         else
+         {
         //     // This is not the first node.
         //     // Add this node to the list and advance the tail
-        //     tail->next = newNode;
-        //     tail = newNode;
-        // }
+             tail->next = newNode;
+             tail = newNode;
+         }
     }
-    // free(currLine);
-    // fclose(movieFile);
-    // return head;
+     free(currLine);
+     fclose(movieFile);
+     return head;
 }
 
 
@@ -138,7 +129,7 @@ int main(int argc, char *argv[])
 
     struct movie *list;
     list = processFile(argv[1]);
-    // printMovieList(list);
-    // printMovie(list);
+    printMovieList(list);
+    printMovie(list);
   return 0;
 }
