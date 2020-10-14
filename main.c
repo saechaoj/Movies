@@ -83,6 +83,37 @@ void checkYear(struct movie* head, int x)
 
 
 
+//Finds specific movie languages and prints it out
+void pickLang(struct movie* head)
+{
+	char l[20];
+	printf("Enter language you want to look up\n");
+	fgets(l,20,stdin);
+	struct movie* temp = head;
+	char* check = NULL;
+
+	int len = strlen(l);
+	if(l[len-1]=='\n')
+	{
+		l[len-1] = '\0' ;
+}
+	while (temp != NULL)
+	{	
+
+		 check = strstr(temp->lang,l);
+		if(check != NULL)
+		{
+			printf("%d,%s\n", temp->year,temp->title);
+			
+		}
+
+		temp = temp->next;
+	}
+
+}
+
+
+
 //Return a linked list of students by parsing data from each line of the specified file.
 
 struct movie *processFile(char *filePath)
@@ -151,6 +182,7 @@ int main(int argc, char *argv[])
     list = processFile(argv[1]);
    // printMovieList(list);
   //  printMovie(list);
-	checkYear(list,2008);	
+   //  checkYear(list,2008);	
+   pickLang(list);
   return 0;
 }
