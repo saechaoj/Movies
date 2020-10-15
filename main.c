@@ -85,9 +85,11 @@ void checkYear(struct movie* head, int x)
 
 //Finds specific movie languages and prints it out
 void pickLang(struct movie* head)
-{
+{	
 	char l[20];
 	printf("Enter language you want to look up\n");
+//gets rid of extra white space to use strstr
+	scanf("%s\n",&l);
 	fgets(l,20,stdin);
 	struct movie* temp = head;
 	char* check = NULL;
@@ -120,6 +122,8 @@ struct movie *processFile(char *filePath)
 {
     // Open the specified file for reading only
     FILE *movieFile = fopen(filePath, "r");
+	int ccc;
+	
     if(!movieFile)
     {
       perror("fopen");
@@ -142,8 +146,8 @@ struct movie *processFile(char *filePath)
 
         // Get a new movie node corresponding to the current line
          struct movie *newNode = createmovie(currLine);
-        //
-       
+        
+       ccc++;
          if (head == NULL)
          {
         //     // This is the first node in the linked link
@@ -160,15 +164,50 @@ struct movie *processFile(char *filePath)
          }
 
     }
-     
+     printf("All %d files loaded\n", ccc);
      free(currLine);
      fclose(movieFile);
      return head;
 }
 
 
+//Sets index value then iterate through list comparing the index  to list. Saves it in node if value is higher
+void highRate(struct movie* head)
+{
+	struct movie* a;
+	struct movie* b;
+	struct movie* c;
+
+	a = head;
+	b = head;
+	c = NULL;
+
+
+	while(b !=  NULL)
+	{
+		
+		a = head;	
+		c = b;
+		while(a != NULL){	
+			if(a->year == b->year && a->rating > b->rating)
+			{
+				c = a;
+				
+			}
+			
+			 if (a->next == NULL)
+                           {        
+                                         printf("%d %s %.1f\n",c->year,c->title,c->rating);
+                            }
+			a = a->next;
+		}
+		b = b->next;
+	}
+}
 int main(int argc, char *argv[])
 {
+	
+	
     if (argc < 2)
     {
         printf("You must provide the name of the file to process\n");
@@ -176,13 +215,53 @@ int main(int argc, char *argv[])
         return 0;
     }
     
-
-
+			
+	
     struct movie *list;
     list = processFile(argv[1]);
-   // printMovieList(list);
-  //  printMovie(list);
-   //  checkYear(list,2008);	
-   pickLang(list);
+	int sw = 1;
+	int ychoice = 0;
+	while(sw != 0)
+	{	
+		printf("1. Show all movies by year\n");
+
+		printf(	"2. Show highest rated for each year\n");
+		printf(	"3. Show title of all movies in specific language\n");
+		printf("4. Exit\n");
+
+
+		scanf("%d", &sw);
+		if(sw == 1)
+			{
+				printf("Enter in year\n");
+				scanf("%d", &ychoice);
+				
+			
+				
+				checkYear(list,ychoice);
+			}
+		else if(sw == 3)
+			{
+				pickLang(list);
+			}
+
+		else if(sw == 4)
+			{
+				sw = 0;
+				return 0;
+			}	
+		
+		else if(sw == 2)
+			{
+				highRate(list);
+			}		
+		else
+			
+		{
+			printf("Invalid choice\n");
+		}
+			
+	}
+   
   return 0;
 }
